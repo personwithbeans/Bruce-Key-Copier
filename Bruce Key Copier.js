@@ -10,13 +10,14 @@ var RightBorder = 70; // Right border for the drawing area in pixels
 
 // 1.9 inch ST7789V IPS color TFT LCD
 var keychoice = "schlage_sc4";
-const notches = [0, 0, 0, 0, 0]; // Array to hold key depths
-var currentNotch = 1; // Current height of the key | starting at 1 = firstposition from left, Key pointing right
+const notches = [0, 0, 0, 0, 0, 0]; // Array to hold key depths
+var currentNotch = 1; // Current notch selected of the key | starting at 1 = firstposition from left, Key pointing right
 var amountOfNotches = 6; // Number of notches
-var maxNotchDepth = 10; // Maximum height of the notches | 10 for Shlage notches
+var maxNotchDepth = 70; // Maximum depth of the notches |
+var amountOfDepths = 10; // 10 for shlage
 var currentNotchDepth = 0; // Current height of the key
 
-var cordinates = [//might not be good in the future
+var cordinates = [//holds the cordinate positions for the line points
     [50, 50],// first two and last two points arnt notches
     [70, 50],// screen size - ~20 seems to be just at the edge for x axis
     [90, 60],// X value from left side of screen | Y value from top of screen (for some reason its that way)
@@ -31,16 +32,38 @@ var cordinates = [//might not be good in the future
 function calculateLineSegments() {//finds the individual spacing betwee each notch
     var spaceToUtilize = screenWidth - (leftBorder + RightBorder)
     var pixelsPerDivision = spaceToUtilize / cordinates.length
+}
+
+function resetDepths() {
     for (var i = 0; i < cordinates.length; i++) {
-        cordinates[i][0] = pixelsPerDivision * (i + 1)
+        cordinates[i][1] = 30
     }
+}
+
+function drawLines() {
+    drawString(keychoice, screenWidth - 150, 5);//display type of key selected
+    for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
+        var x1 = cordinates[i][0];
+        var y1 = cordinates[i][1];
+        var x2 = cordinates[i + 1][0];
+        var y2 = cordinates[i + 1][1];
+        display.drawLine(
+            x1, y1, x2, y2, PriColour
+        );
+    }
+}
+
+function refreshScreen() {
+    display.fill(BGColour);
+    drawHighighter();
+    drawLines();
 }
 
 function mainMenu() {
     var choice = dialogChoice([
-        "Change Key Type", "keyChange",//change later
-        "Save key", "saveKey",
-        "New Key", "newKey",
+        "[WIP] Change Key Type", "keyChange",//change later
+        "[WIP] Save key", "saveKey",
+        "[WIP] New Key", "newKey",
         "Exit", "exit"
     ]) || "";
     if (choice == "exit") {
@@ -56,7 +79,7 @@ function mainMenu() {
         dialog.message("not yet implemented"); // Just displays the message
     }
     if (choice == "keyChange") {
-        var keychoice = dialogChoice([//default key whould be shlage
+        var keychoice = dialogChoice([//default key whould be shlage [ONLY GONNA BE WORKED ON AFTER I GET SOMTHING IN PLACE TO DEAL WITH THE FUCKY FUCKY VARIABLES needed]
             "Kwikset KW1", "kwikset_kw1",
             "Schlage SC4", "schlage_sc4",
             "Arrow AR4", "arrow_ar4",
@@ -73,10 +96,8 @@ function mainMenu() {
             return;
         }
     }
-    display.fill(BGColour);//update the screen on exit of main menu
-    drawHighighter();
+    refreshScreen()//update/refresh the screen on exit of main menu using cancel button
 }
-
 
 function changeSelectedNotch() {
     if (currentNotch < amountOfNotches) {
@@ -84,6 +105,7 @@ function changeSelectedNotch() {
     } else if (currentNotch >= amountOfNotches) {
         currentNotch = 1; // Reset to first notch
     }
+    currentNotchDepth = notches[currentNotch - 1]
 }
 
 function drawHighighter() {
@@ -92,26 +114,24 @@ function drawHighighter() {
     display.drawCircle(currentNotchX, currentNotchY, 5, BRUCE_PRICOLOR)//x | y | Radius | Colour
 }
 
+function updatecurrentNotchHeight() {
+    cordinates[currentNotch + 1][1]= (currentNotchDepth * (maxNotchDepth / amountOfDepths)) + 30;//-1 accounts for array// +1 accounts for the end points current notch starts at 1
+    refreshScreen()
+}
+
 //screen size (320x170) 
 
 //innitial setup
 display.fill(BGColour);
+resetDepths()
 calculateLineSegments()
+drawLines()
 drawHighighter()
+
 
 //main loop
 while (true) {
-    drawString(keychoice, screenWidth - 150, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
-        var x1 = cordinates[i][0];
-        var y1 = cordinates[i][1];
-        var x2 = cordinates[i + 1][0];
-        var y2 = cordinates[i + 1][1];
-        display.drawLine(
-            x1, y1, x2, y2, PriColour
-        );
-    }
-
+    drawString(currentNotchDepth, screenWidth - 180, 5);//display type of key selected
     if (getEscPress()) {
         choice = mainMenu()
         if (choice === "exit") {
@@ -122,10 +142,23 @@ while (true) {
         display.fill(BGColour);
         changeSelectedNotch()
         drawHighighter()
+        drawLines()
+    }
+    if (getNextPress() && currentNotchDepth < maxNotchDepth) {
+        currentNotchDepth += 1;
+        updatecurrentNotchHeight()
+        drawLines()
+        delay(20);
+    }
+    if (getPrevPress() && currentNotchDepth > 0) {
+        currentNotchDepth -= 1;
+        updatecurrentNotchHeight()
+        drawLines()
+        delay(20);
     }
 }
 
-//Random tidbits of code
+//Random tidbits of code to be later introduced
 
 // while (true) {
 
