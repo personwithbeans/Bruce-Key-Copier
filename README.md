@@ -5,6 +5,10 @@ I'n new to JavaScript and more complacated coding so enjoy my probably crappy co
 This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V IPS color TFT LCD. It provides a graphical interface for visualizing and copying key profiles, specifically for pin tumbler keys. The script allows users to select key types, visualize notches, and interact with the key profile.
 
 - **Key Type Selection:** Choose from common key types (e.g., Kwikset KW1, Schlage SC4, Arrow AR4, Master Lock M1, American AM7). -- WIP
+## Working on
+- getting sizing for schalge key (default starter key set up)
+- adding in changing of notch positions and the sizing that goes with that
+- understanding the divices wierd ass coordinate system for drawing lines
 
 ## Usage
 
