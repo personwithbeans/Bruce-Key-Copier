@@ -4,9 +4,10 @@ const dialog = require("dialog");
 var BGColour = BRUCE_BGCOLOR; // Black background
 var PriColour = BRUCE_PRICOLOR; // White lines 
 var screenWidth = width();
-var screenHeight = height();
+var screenHeight = height();//who knows if this is even usefull
 var leftBorder = 20; // Left border for the drawing area in pixels
-var RightBorder = 70; // Right border for the drawing area in pixels
+var rightBorder = 60; // Right border for the drawing area in pixels
+var topBorder = 40;
 
 // 1.9 inch ST7789V IPS color TFT LCD
 var keychoice = "schlage_sc4";
@@ -14,6 +15,7 @@ const notches = [0, 0, 0, 0, 0, 0]; // Array to hold key depths
 var currentNotch = 1; // Current notch selected of the key | starting at 1 = firstposition from left, Key pointing right
 var amountOfNotches = 6; // Number of notches
 var maxNotchDepth = 70; // Maximum depth of the notches |
+var maxNotchDepthPositions = 10; // Maximum depth of the notches |
 var amountOfDepths = 10; // 10 for shlage
 var currentNotchDepth = 0; // Current height of the key
 
@@ -30,14 +32,18 @@ var cordinates = [//holds the cordinate positions for the line points
     [230, 50]//final line end point [2 extra for the end lines]
 ];
 function calculateLineSegments() {//finds the individual spacing betwee each notch
-    var spaceToUtilize = screenWidth - (leftBorder + RightBorder)
+    var spaceToUtilize = screenWidth - (leftBorder + rightBorder)
     var pixelsPerDivision = spaceToUtilize / cordinates.length
 }
 
 function resetDepths() {
     for (var i = 0; i < cordinates.length; i++) {
-        cordinates[i][1] = 30
+        cordinates[i][1] = topBorder//base depth is 30
     }
+    for (var i = 0; i < notches.length; i++) {
+        notches[i] = 0
+    }
+    currentNotchDepth = 0
 }
 
 function drawLines() {
@@ -63,7 +69,7 @@ function mainMenu() {
     var choice = dialogChoice([
         "[WIP] Change Key Type", "keyChange",//change later
         "[WIP] Save key", "saveKey",
-        "[WIP] New Key", "newKey",
+        "New Key", "newKey",
         "Exit", "exit"
     ]) || "";
     if (choice == "exit") {
@@ -76,7 +82,8 @@ function mainMenu() {
         dialog.message("not yet implemented"); // Just displays the message
     }
     if (choice == "newKey") {
-        dialog.message("not yet implemented"); // Just displays the message
+        resetDepths()
+        refreshScreen()
     }
     if (choice == "keyChange") {
         var keychoice = dialogChoice([//default key whould be shlage [ONLY GONNA BE WORKED ON AFTER I GET SOMTHING IN PLACE TO DEAL WITH THE FUCKY FUCKY VARIABLES needed]
@@ -115,7 +122,8 @@ function drawHighighter() {
 }
 
 function updatecurrentNotchHeight() {
-    cordinates[currentNotch + 1][1]= (currentNotchDepth * (maxNotchDepth / amountOfDepths)) + 30;//-1 accounts for array// +1 accounts for the end points current notch starts at 1
+    cordinates[currentNotch + 1][1]= (currentNotchDepth * (maxNotchDepth / amountOfDepths)) + topBorder;//-1 accounts for array// +1 accounts for the end points current notch starts at 1
+    notches[currentNotch - 1] = currentNotchDepth
     refreshScreen()
 }
 
@@ -144,7 +152,7 @@ while (true) {
         drawHighighter()
         drawLines()
     }
-    if (getNextPress() && currentNotchDepth < maxNotchDepth) {
+    if (getNextPress() && currentNotchDepth < maxNotchDepthPositions) {
         currentNotchDepth += 1;
         updatecurrentNotchHeight()
         drawLines()
@@ -157,21 +165,3 @@ while (true) {
         delay(20);
     }
 }
-
-//Random tidbits of code to be later introduced
-
-// while (true) {
-
-//     if (getNextPress() && currentNotchDepth < maxNotchDepth - 1) {
-//         currentNotchDepth += 1;
-//         delay(20);
-//     }
-//     if (getPrevPress() && currentNotchDepth > 0) {
-//         currentNotchDepth -= 1;
-//         delay(20);
-//     }
-//     function updatecurrentNotchHeight(depth) {
-//         currentNotchDepth = currentNotch * (maxNotchDepth / amountOfNotches);
-//
-//
-// }
