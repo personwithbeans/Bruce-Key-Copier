@@ -17,12 +17,13 @@ This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V
 2. **Run the Script:**  
    Load  the script in your Bruce JS Interpreter.
 
-3. **Controls:**  
+3. **Controls:**
+   - **Next & Back Button** Controls the height of the selected notch
    - **ESC Button:** Opens the main menu (change key type, save, new, exit).
    - **Select Button:** Cycles through the notches, highlighting the current one. 
    - **Display:** Shows the current key type and a graphical representation of the key profile. -- WIP/Rough Draft
 
-4. **Key Types:**  
+5. **Key Types:**  
    The script supports the following key types by default:
    - Kwikset KW1 -- not yet supported
    - Schlage SC4
