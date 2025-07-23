@@ -2,6 +2,8 @@ I'n new to JavaScript only realy knew a bit a python so enjoy my probably crappy
 
 Thank's to icy.1 on discord for providing an example just demonstrating rendering lines for me to start working of off.
 
+Only device currently supported is the Lilygo T-Embed series
+
 # Key Copy Utility for Bruce JS Interpreter
 
 This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V IPS color TFT LCD. It provides a graphical interface for visualizing and copying key profiles, specifically for pin tumbler keys. The script allows users to select key types, visualize notches, and interact with the key profile.
@@ -29,8 +31,8 @@ This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V
 
 5. **Key Types:**  
    The script supports the following key types by default:
-   - Kwikset KW1 -- not yet supported
-   - Schlage SC4
+   - Kwikset KW1
+   - Schlage SC4 -- not yet supported
    - Arrow AR4 -- not yet supported
    - Master Lock M1 -- not yet supported
    - American AM7 -- not yet supported
