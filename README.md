@@ -1,4 +1,6 @@
-I'n new to JavaScript and more complacated coding so enjoy my probably crappy code
+I'n new to JavaScript only realy knew a bit a python so enjoy my probably crappy code
+
+Thank's to icy.1 on discord for providing an example just demonstrating rendering lines for me to start working of off.
 
 # Key Copy Utility for Bruce JS Interpreter
 
@@ -39,8 +41,8 @@ This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V
 
 ## Requirements
 
-- Version of Bruce with JS interpreter (github.com/pr3y/Bruce)
-- 1.9" ST7789V IPS color TFT LCD (or compatible display) -- ( Lillygo T-Embed CC1101 )
+- Version of Bruce with JS interpreter ([github.com/pr3y/Bruce](url))
+- 1.9" ST7789V IPS color TFT LCD (or compatible display) -- ( Lillygo T-Embed CC1101 | [lilygo.cc/products/t-embed-cc1101](url))
 
 ## Disclaimer
 
