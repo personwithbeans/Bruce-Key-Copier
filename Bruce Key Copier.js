@@ -6,7 +6,7 @@ var PriColour = BRUCE_PRICOLOR; // White lines
 var screenWidth = width();
 var screenHeight = height();
 var leftBorder = 20; // Left border for the drawing area in pixels
-var RightBorder = 50; // Right border for the drawing area in pixels
+var RightBorder = 70; // Right border for the drawing area in pixels
 
 // 1.9 inch ST7789V IPS color TFT LCD
 var keychoice = "schlage_sc4";
@@ -17,16 +17,20 @@ var maxNotchDepth = 10; // Maximum height of the notches | 10 for Shlage notches
 var currentNotchDepth = 0; // Current height of the key
 
 var cordinates = [//might not be good in the future
-    [50, 50],// X value from left side of screen | Y value from top of screen (for some reason)
-    [70, 50],// screen size - ~20 seems to be just at the edge
-    [90, 60],
+    [50, 50],// first two and last two points arnt notches
+    [70, 50],// screen size - ~20 seems to be just at the edge for x axis
+    [90, 60],// X value from left side of screen | Y value from top of screen (for some reason its that way)
     [110, 40],
     [130, 70],
-    [150, 60],//final line end point
+    [150, 60],
+    [170, 60],
+    [190, 40],
+    [210, 50],
+    [230, 50]//final line end point [2 extra for the end lines]
 ];
 function calculateLineSegments() {//finds the individual spacing betwee each notch
     var spaceToUtilize = screenWidth - (leftBorder + RightBorder)
-    var pixelsPerDivision = spaceToUtilize / amountOfNotches
+    var pixelsPerDivision = spaceToUtilize / cordinates.length
     for (var i = 0; i < cordinates.length; i++) {
         cordinates[i][0] = pixelsPerDivision * (i + 1)
     }
@@ -69,6 +73,8 @@ function mainMenu() {
             return;
         }
     }
+    display.fill(BGColour);//update the screen on exit of main menu
+    drawHighighter();
 }
 
 
@@ -81,17 +87,22 @@ function changeSelectedNotch() {
 }
 
 function drawHighighter() {
-    var currentNotchX = cordinates[currentNotch - 1][0]// -1 due to currentNotch starting at 1, array's start at 0
-    var currentNotchY = cordinates[currentNotch - 1][1]
+    var currentNotchX = cordinates[currentNotch + 1][0]// +1 to start on the right point in the array
+    var currentNotchY = cordinates[currentNotch + 1][1]
     display.drawCircle(currentNotchX, currentNotchY, 5, BRUCE_PRICOLOR)//x | y | Radius | Colour
 }
 
 //screen size (320x170) 
+
+//innitial setup
 display.fill(BGColour);
 calculateLineSegments()
+drawHighighter()
+
+//main loop
 while (true) {
     drawString(keychoice, screenWidth - 150, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 1; i++) {
+    for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
         var x1 = cordinates[i][0];
         var y1 = cordinates[i][1];
         var x2 = cordinates[i + 1][0];
@@ -114,7 +125,7 @@ while (true) {
     }
 }
 
-//Random old tidbits of code
+//Random tidbits of code
 
 // while (true) {
 
