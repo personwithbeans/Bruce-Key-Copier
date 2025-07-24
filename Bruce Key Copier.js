@@ -1,3 +1,4 @@
+//listen, I know this is probably an orginizational nightmare but it works
 //default variables set for kwikset keys
 const display = require("display");
 const dialog = require("dialog");
@@ -25,6 +26,7 @@ var maxNotchDepth = 70; // Maximum depth of the notches |
 var maxNotchDepthPositions = 10; // Maximum depth of the notches |
 var amountOfDepths = 10; // 10 for kwikset
 var currentNotchDepth = 0; // Current height of the key
+var depthPerSegment = (maxNotchDepth / maxNotchDepthPositions)
 
 var cordinates = [//holds the cordinate positions for the line points
     [0, 50],// first two and last two points arnt notches
@@ -85,8 +87,8 @@ function refreshScreen() {
 function mainMenu() {
     var choice = dialogChoice([
         "[WIP] Change Key Type", "keyChange",//change later
-        "[WIP] Save key", "saveKey",
-        "[WIP] Load key", "loadKey",
+        "Save key", "saveKey",
+        "Load key", "loadKey",
         "New Key", "newKey",
         "Exit", "exit"
     ]) || "";
@@ -98,13 +100,16 @@ function mainMenu() {
     }
     if (choice == "saveKey") {
         saveKey()
+        return;
     }
     if (choice == "loadKey") {
         loadKey()
+        return;
     }
     if (choice == "newKey") {
         resetDepths()
         refreshScreen()
+        return;
     }
     if (choice == "keyChange") {
         var keychoice = dialogChoice([//default key whould be kwikset [ONLY GONNA BE WORKED ON AFTER I GET SOMTHING IN PLACE TO DEAL WITH THE FUCKY FUCKY VARIABLES]
@@ -155,19 +160,19 @@ function textSetup() {
 }
 
 function collectKeyData() {//putts all the data into a large array
-    var keyData = [keychoice, notches]
-    return keyData
+    var keyData = [keychoice, notches];
+    return keyData;
 }
 
 function fileCheck() {
-    var DirContents = storage.readdir({ fs: "sd", path: "/Brucekeys" });
+    var DirContents = storage.readdir({ fs: "sd", path: "/BruceKeys" });
     for (var i = 0; i < 100; i++) {
         var filename = "KeyCopy_" + i + ".txt";
         if (DirContents.indexOf(filename) === -1) {
             return i; // Return the first available number
         }
     }
-    return null; // All slots taken
+    return null; // All slots taken, currently hardcapped to max of 100 
 }
 
 function fileDataWrite(filenameEndValue) {//writes the data for a file, don't know if it can create a file though
@@ -193,19 +198,49 @@ function saveKey() {//main function to save file
     if (dirCheck() == true) {//checks in the BruceKeys folder exists in the sd directory [in future maybe if no sd then divert to small file system, check at start]
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     } else {
-        storage.mkdir({ fs: "sd", path: "/BruceKeys" })//creates folder if no detected on sd card
+        storage.mkdir({ fs: "sd", path: "/BruceKeys" });//creates folder if no detected on sd card
         if (dirCheck() == true) { //checks if successfully created
             dialog.success("BruceKeys folder created successfully.");
             delay(200);
         }
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     }
+    return;
 }
-
 
 function loadKey() {
-    dialog.pickFile({ fs: "sd", path: "/BruceKeys" });
+    var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
+    if (!chosenFile) {//if operaiton is canceled display error message
+        dialog.error("No file selected.");
+    }
+    // Read the file contents
+    var fileString = storage.read({ fs: "sd", path: chosenFile });
+    var fileData = fileString.split(",");//split into array
+
+
+    keychoice = fileData[0]
+    for (i = 0; i < fileData.length - 1; i++) {//update notch numbers
+        notches[i] = Number(fileData[i + 1])
+    }
+    for (i = 0; i < fileData.length - 1; i++) {//update line endpoint cordinates
+        cordinates[i + 2][1] = ((depthPerSegment * Number(fileData[i + 1])) + topBorder)
+    }
+    dialog.success("Key loaded");
+    refreshScreen();
+    return;
 }
+
+
+
+
+
+
+
+// function loadKey() {
+//     var chosenFile = dialog.pickFile({ fs: "sd", path: "/BruceKeys/" });
+//     dialog.message(chosenFile);
+//     delay(500);
+// }
 
 //screen size (320x170) 
 
