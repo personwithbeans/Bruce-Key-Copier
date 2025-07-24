@@ -11,10 +11,10 @@ This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V
 - **Key Type Selection:** Choose from common key types (e.g., Kwikset KW1, Schlage SC4, Arrow AR4, Master Lock M1, American AM7). -- WIP
 ## Working on
 - getting sizing for kwikset key (default starter key set up)
-- adding in changing of notch positions and the sizing that goes with that
 - understanding the divices wierd ass coordinate system for drawing lines
-- saving and loading files for storing key information
-- addming multiple keys
+- loading files for storing key information
+- adding multiple keys
+- custom file names
 
 ## Usage
 
