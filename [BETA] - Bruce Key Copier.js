@@ -13,7 +13,7 @@ const storage = require("storage");
 var BGColour = BRUCE_BGCOLOR;       // Currrent BG colour set by bruce
 var PriColour = BRUCE_PRICOLOR;     // Currrent Pri colour set by bruce
 var screenWidth = width();
-var screenHeight = height();        //who knows if this is even usefull
+var screenHeight = height();        //who knows if this is even usefull or ever will be
 var leftBorder = 20;                // Left border for the drawing area in pixels
 var rightBorder = 40;               // Right border for the drawing area in pixels
 var topBorder = 50;                 // as to be expected its the border for the top
@@ -21,7 +21,7 @@ var horizontalTextAllignment = 1;   // 0 | 1 | 2 || left | center | right
 var verticalTextAllignment = 0;     // 0 | 1 | 2 || top | middle | bottom
 var textSize = 2;//DEAR GOD I TRIED 10, ITS WAY TO BIG. 2 seemes to be the default. 1 is barely visible is there no middle ground!!!?!???!?!?!
 var rootDirContents = [storage.readdir({ fs: "sd", path: "/" })];//used to check if the BruceKeys folder exists
-var depthWidth = 3;//total width gets double this value
+
 
 
 var keychoice = "kwikset_kw1";//default
@@ -33,6 +33,7 @@ var maxNotchDepthPositions = 10; // Maximum depth of the notches |
 var amountOfDepths = 10; // 10 for kwikset
 var currentNotchDepth = 0; // Current height of the key
 var depthPerSegment = (maxNotchDepth / maxNotchDepthPositions)
+var depthWidth = 2;//total width gets double this value
 
 var cordinates = [//holds the cordinate positions for the line points
     [0, 50],// first two and last two points arnt notches
@@ -76,18 +77,16 @@ function drawDepthValues() {//display the depth values above
 
 function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 2; i++) {//go though each point and render
-        var x1 = cordinates[i][0] + depthWidth;//add space for little platau
-        var y1 = cordinates[i][1];
-        var x2 = cordinates[i + 1][0] - depthWidth;//add space for little platau
-        var y2 = cordinates[i + 1][1];
+    for (var i = 0; i < cordinates.length - 3; i++) {//go though each point and render
+        var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+        var y1 = cordinates[i + 1][1];
+        var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var y2 = cordinates[i + 2][1];
 
         display.drawLine(
             x1, y1, x2, y2, PriColour
         );
     }
-
-    display.drawCircle(cordinates[7][0], cordinates[7][1], 2, PriColour)
 
     for (var i = 0; i < notches.length + 1; i++) {
         var x01 = cordinates[i + 1][0] + depthWidth;//add space for little platau
@@ -109,9 +108,11 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
             x1, y1, x2, y2, PriColour
         );
     }
+    //additional lines [kwikset_kw1]
     display.drawLine(cordinates[7][0], cordinates[7][1], cordinates[7][0], cordinates[7][1] + 10, PriColour)// + 10 need to be writable variable for multiple keys
     display.drawLine(cordinates[7][0], cordinates[7][1] + 10, cordinates[7][0] - 15, cordinates[7][1] + 30, PriColour)//need to change to varaible controlled for multiple keys
-    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 30, 0, cordinates[7][1] + 30,PriColour)
+    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 30, 0, cordinates[7][1] + 30, PriColour)
+    display.drawLine(cordinates[1][0] + depthWidth, topBorder, 0, topBorder, PriColour)
 }
 
 function refreshScreen() {//refreshes screen/updates any information
