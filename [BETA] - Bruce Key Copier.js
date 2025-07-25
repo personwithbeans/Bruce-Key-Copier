@@ -1,24 +1,29 @@
+//Author: github.com/personwithbeans
+//Lisence: AGPL-3.0 license
+
 //listen, I know this is probably an orginizational nightmare but it works
 //default variables set for kwikset keys
+//also currenlty only make to work on lilygo t-embed series of devices or at least ones with 4 differnt input methods
+
+//bring modules in
 const display = require("display");
 const dialog = require("dialog");
 const storage = require("storage");
-var BGColour = BRUCE_BGCOLOR;       // Black background
-var PriColour = BRUCE_PRICOLOR;     // White lines 
+
+var BGColour = BRUCE_BGCOLOR;       // Currrent BG colour set by bruce
+var PriColour = BRUCE_PRICOLOR;     // Currrent Pri colour set by bruce
 var screenWidth = width();
 var screenHeight = height();        //who knows if this is even usefull
 var leftBorder = 20;                // Left border for the drawing area in pixels
 var rightBorder = 40;               // Right border for the drawing area in pixels
-var topBorder = 50;
+var topBorder = 50;                 // as to be expected its the border for the top
 var horizontalTextAllignment = 1;   // 0 | 1 | 2 || left | center | right
 var verticalTextAllignment = 0;     // 0 | 1 | 2 || top | middle | bottom
 var textSize = 2;//DEAR GOD I TRIED 10, ITS WAY TO BIG. 2 seemes to be the default. 1 is barely visible is there no middle ground!!!?!???!?!?!
-var rootDirContents = [storage.readdir({ fs: "sd", path: "/" })];
+var rootDirContents = [storage.readdir({ fs: "sd", path: "/" })];//used to check if the BruceKeys folder exists
 var depthWidth = 3;//total width gets double this value
 
 
-
-// 1.9 inch ST7789V IPS color TFT LCD
 var keychoice = "kwikset_kw1";//default
 var notches = [0, 0, 0, 0, 0]; // Array to hold key depths
 var currentNotch = 1; // Current notch selected of the key | starting at 1 = firstposition from left, Key pointing right
@@ -37,23 +42,23 @@ var cordinates = [//holds the cordinate positions for the line points
     [130, 70],
     [150, 60],
     [170, 60],
-    [190, 40],
-    [210, 50],
+    [200, 90],
+    [190, 90]//does not draw a line after this
     //final line end point [2 extra for the end lines]
 ];
 
-//17 lines needed total, 18 points
+//most of of the following is probably stupid and hosnesty the fact that it works in magic
 
-function calculateLineSegments() {//finds the individual spacing betwee each notch
+function calculateLineSegments() {//calculate individual spacing between each notch and sets
     var spaceToUtilize = screenWidth - (leftBorder + rightBorder)
     var pixelsPerDivision = spaceToUtilize / cordinates.length
     maxNotchDepth = pixelsPerDivision
-    for (var i = 0; i < notches.length + 2; i++) {
+    for (var i = 0; i < notches.length; i++) {
         cordinates[i + 2][0] = (pixelsPerDivision * (i + 1)) + leftBorder
     }
 }
 
-function resetDepths() {
+function resetDepths() {//whoa who could have guessed it resets the height. NOT LIKE ITS IN THE FREEKIN NAME.
     for (var i = 0; i < notches.length; i++) {
         cordinates[i + 2][1] = topBorder//starting depth from top of screen
     }
@@ -63,15 +68,15 @@ function resetDepths() {
     currentNotchDepth = 0
 }
 
-function drawDepthValues() {
+function drawDepthValues() {//display the depth values above
     for (var i = 0; i < notches.length; i++) {
         display.drawString(notches[i], cordinates[i + 2][0], topBorder / 2)
-    }
+    }//maybe add lines that extend down from these
 }
 
-function drawLines() {
+function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
+    for (var i = 0; i < cordinates.length - 2; i++) {//go though each point and render
         var x1 = cordinates[i][0] + depthWidth;//add space for little platau
         var y1 = cordinates[i][1];
         var x2 = cordinates[i + 1][0] - depthWidth;//add space for little platau
@@ -82,29 +87,34 @@ function drawLines() {
         );
     }
 
+    display.drawCircle(cordinates[7][0], cordinates[7][1], 2, PriColour)
+
     for (var i = 0; i < notches.length + 1; i++) {
-        var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
-        var y1 = cordinates[i + 1][1];
-        var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
-        var y2 = cordinates[i + 2][1];
+        var x01 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+        var y01 = cordinates[i + 1][1];
+        var x02 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var y02 = cordinates[i + 2][1];
 
         display.drawCircle(//temp, just to draw the points      x | y | rad | colour
-            (-(x1 - x2) / 2) + x1, ((y1 + y2) / 2) - ((x2 - x1) / 2), 3, PriColour
+            (-(x01 - x02) / 2) + x01, ((y01 + y02) / 2) - ((x02 - x01) / 2), 3, PriColour
         );
     }
 
-    for (var i = 0; i < cordinates.length - 1; i++) {//add little line in between sloaped lines "\_/""
-        var x1 = cordinates[i][0] - depthWidth;//add space for little platau
-        var y1 = cordinates[i][1];
-        var x2 = cordinates[i][0] + depthWidth;
-        var y2 = cordinates[i][1];
+    for (var i = 0; i < notches.length; i++) {//add little line in between sloaped lines "\_/""
+        var x1 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var y1 = cordinates[i + 2][1];
+        var x2 = cordinates[i + 2][0] + depthWidth;
+        var y2 = cordinates[i + 2][1];
         display.drawLine(
             x1, y1, x2, y2, PriColour
         );
     }
+    display.drawLine(cordinates[7][0], cordinates[7][1], cordinates[7][0], cordinates[7][1] + 10, PriColour)// + 10 need to be writable variable for multiple keys
+    display.drawLine(cordinates[7][0], cordinates[7][1] + 10, cordinates[7][0] - 15, cordinates[7][1] + 30, PriColour)//need to change to varaible controlled for multiple keys
+    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 30, 0, cordinates[7][1] + 30,PriColour)
 }
 
-function refreshScreen() {
+function refreshScreen() {//refreshes screen/updates any information
     textSetup()
     display.fill(BGColour);
     drawHighighter();
@@ -113,8 +123,8 @@ function refreshScreen() {
 }
 
 function mainMenu() {
-    var choice = dialogChoice([
-        "[WIP] Change Key Type", "keyChange",//change later
+    var choice = dialogChoice([//how the fuck does this function work
+        "[WIP] Change Key Type", "keyChange",
         "Save key", "saveKey",
         "Load key", "loadKey",
         "New Key", "newKey",
@@ -140,7 +150,7 @@ function mainMenu() {
         return;
     }
     if (choice == "keyChange") {
-        var keychoice = dialogChoice([//default key whould be kwikset [ONLY GONNA BE WORKED ON AFTER I GET SOMTHING IN PLACE TO DEAL WITH THE FUCKY FUCKY VARIABLES]
+        var keychoice = dialogChoice([//default key whould be kwikset [ONLY GONNA BE WORKED ON AFTER I GET SOMTHING IN PLACE TO DEAL WITH THE FUCKY FUCKY VARIABLES], also how the fuck does this work?
             "Kwikset KW1", "kwikset_kw1",
             "Schlage SC4", "schlage_sc4",
             "Arrow AR4", "arrow_ar4",
@@ -169,13 +179,13 @@ function changeSelectedNotch() {
     currentNotchDepth = notches[currentNotch - 1]
 }
 
-function drawHighighter() {
+function drawHighighter() {//highlights the notch currently sellected to be changed
     var currentNotchX = cordinates[currentNotch + 1][0]// +1 to start on the right point in the array
     var currentNotchY = cordinates[currentNotch + 1][1]
     display.drawCircle(currentNotchX, currentNotchY, 5, PriColour)//x | y | Radius | Colour
 }
 
-function updatecurrentNotchHeight() {
+function updatecurrentNotchHeight() {//updates notch height after value ajusted, no idea if this is even needed
     cordinates[currentNotch + 1][1] = (currentNotchDepth * (maxNotchDepth / amountOfDepths)) + topBorder;//-1 accounts for array// +1 accounts for the end points current notch starts at 1
     notches[currentNotch - 1] = currentNotchDepth
     refreshScreen()
@@ -192,15 +202,15 @@ function collectKeyData() {//putts all the data into a large array
     return keyData;
 }
 
-function fileCheck() {
+function fileCheck() {// Return the first available number
     var DirContents = storage.readdir({ fs: "sd", path: "/BruceKeys" });
     for (var i = 0; i < 100; i++) {
         var filename = "KeyCopy_" + i + ".txt";
         if (DirContents.indexOf(filename) === -1) {
-            return i; // Return the first available number
+            return i;
         }
     }
-    return null; // All slots taken, currently hardcapped to max of 100 
+    return null; // All slots taken, currently hardcapped to max of 100 to prevents some sort of infinite loop, if you need over 100 saved keys you have an issue
 }
 
 function fileDataWrite(filenameEndValue) {//writes the data for a file, don't know if it can create a file though
@@ -235,7 +245,7 @@ function saveKey() {//main function to save file
     return;
 }
 
-function loadKey() {
+function loadKey() {//selve explanitory function name
     var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
     if (!chosenFile) {//if operaiton is canceled display error message
         dialog.error("No file selected.");
@@ -259,7 +269,7 @@ function loadKey() {
 
 
 //screen size (320x170) 
-
+// 1.9 inch ST7789V IPS color TFT LCD
 
 //innitial setup
 textSetup()
