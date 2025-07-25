@@ -4,6 +4,7 @@
 //listen, I know this is probably an orginizational nightmare but it works
 //default variables set for kwikset keys
 //also currenlty only make to work on lilygo t-embed series of devices or at least ones with 4 differnt input methods
+//all function names are self-explanatory , I hope.
 
 //bring modules in
 const display = require("display");
@@ -13,7 +14,7 @@ const storage = require("storage");
 var BGColour = BRUCE_BGCOLOR;       // Currrent BG colour set by bruce
 var PriColour = BRUCE_PRICOLOR;     // Currrent Pri colour set by bruce
 var screenWidth = width();
-var screenHeight = height();        //who knows if this is even usefull or ever will be
+var screenHeight = height();        //who knows if this is even usefull or ever will be...      ...Do I even need this????????
 var leftBorder = 20;                // Left border for the drawing area in pixels
 var rightBorder = 40;               // Right border for the drawing area in pixels
 var topBorder = 50;                 // as to be expected its the border for the top
@@ -34,6 +35,7 @@ var amountOfDepths = 10; // 10 for kwikset
 var currentNotchDepth = 0; // Current height of the key
 var depthPerSegment = (maxNotchDepth / maxNotchDepthPositions)
 var depthWidth = 2;//total width gets double this value
+var verticalLineBuffer = 10;
 
 var cordinates = [//holds the cordinate positions for the line points
     [0, 50],// first two and last two points arnt notches
@@ -72,7 +74,16 @@ function resetDepths() {//whoa who could have guessed it resets the height. NOT 
 function drawDepthValues() {//display the depth values above
     for (var i = 0; i < notches.length; i++) {
         display.drawString(notches[i], cordinates[i + 2][0], topBorder / 2)
-    }//maybe add lines that extend down from these
+    }
+
+    for (var i = 0; i < notches.length; i++) {//add lines that extend down from these
+        var x = cordinates[i + 2][0]
+        var y1 = ((topBorder / 2) + verticalLineBuffer + 10); //top y value (+ 10 is a little extra to clear the numbers above)
+        var y2 = (cordinates[i + 2][1] - verticalLineBuffer); //bottom y value
+        display.drawLine(
+            x, y1, x, y2, PriColour
+        );
+    }
 }
 
 function drawLines() {//WHOOOAAA, you can draw lines????? crazy
@@ -88,10 +99,10 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
         );
     }
 
-    for (var i = 0; i < notches.length + 1; i++) {
-        var x01 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+    for (var i = 0; i < notches.length + 1; i++) {//i wish i could say that desmos was helpfull or understanding this part
+        var x01 = cordinates[i + 1][0] + depthWidth;
         var y01 = cordinates[i + 1][1];
-        var x02 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var x02 = cordinates[i + 2][0] - depthWidth;
         var y02 = cordinates[i + 2][1];
 
         display.drawCircle(//temp, just to draw the points      x | y | rad | colour
@@ -100,7 +111,7 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     }
 
     for (var i = 0; i < notches.length; i++) {//add little line in between sloaped lines "\_/""
-        var x1 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var x1 = cordinates[i + 2][0] - depthWidth;
         var y1 = cordinates[i + 2][1];
         var x2 = cordinates[i + 2][0] + depthWidth;
         var y2 = cordinates[i + 2][1];
@@ -165,13 +176,13 @@ function mainMenu() {
             mainMenu();
         } else {
             display.fill(BGColour);
-            return;
+            return;//returns to main menu
         }
     }
     refreshScreen()//update/refresh the screen on exit of main menu using cancel button
 }
 
-function changeSelectedNotch() {
+function changeSelectedNotch() {//if you are reading these notes why are you doing this to yourself. Haven't someone alredy suffered enough?
     if (currentNotch < amountOfNotches) {
         currentNotch += 1;
     } else if (currentNotch >= amountOfNotches) {
@@ -250,6 +261,7 @@ function loadKey() {//selve explanitory function name
     var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
     if (!chosenFile) {//if operaiton is canceled display error message
         dialog.error("No file selected.");
+        elay(1000)
     }
     // Read the file contents
     var fileString = storage.read({ fs: "sd", path: chosenFile });
@@ -262,8 +274,10 @@ function loadKey() {//selve explanitory function name
     }
     for (i = 0; i < fileData.length - 1; i++) {//update line endpoint cordinates
         cordinates[i + 2][1] = ((depthPerSegment * Number(fileData[i + 1])) + topBorder)
+        dialog.success("Key loaded");
+        delay(1000)
     }
-    dialog.success("Key loaded");
+
     refreshScreen();
     return;
 }
@@ -313,3 +327,4 @@ while (true) {
         delay(20);
     }
 }
+//congrats you've reached the end of my crappy code that somehow works
