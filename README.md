@@ -2,7 +2,7 @@ I'n new to JavaScript only realy knew a bit a python so enjoy my probably crappy
 
 Thank's to icy.1 on discord for providing an example just demonstrating rendering lines for me to start working of off.
 
-Only device currently supported is the Lilygo T-Embed series
+##Only device currently intended to be supported is the Lilygo T-Embed series
 
 # Key Copy Utility for Bruce JS Interpreter
 
