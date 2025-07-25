@@ -4,11 +4,7 @@ Thank's to icy.1 on discord for providing an example just demonstrating renderin
 
 ## Only device currently intended to be supported is the Lilygo T-Embed series
 
-# Key Copy Utility for Bruce JS Interpreter
 
-This script is designed for use with the Bruce JS interpreter and a 1.9" ST7789V IPS color TFT LCD. It provides a graphical interface for visualizing and copying key profiles, specifically for pin tumbler keys. The script allows users to select key types, visualize notches, and interact with the key profile.
-
-- **Key Type Selection:** Choose from common key types (e.g., Kwikset KW1, Schlage SC4, Arrow AR4, Master Lock M1, American AM7). -- WIP
 ## Working on
 - working on improving the key drawings
 - understanding the devices wierd ass coordinate system for drawing lines
