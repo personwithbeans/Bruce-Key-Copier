@@ -14,6 +14,7 @@ var horizontalTextAllignment = 1;   // 0 | 1 | 2 || left | center | right
 var verticalTextAllignment = 0;     // 0 | 1 | 2 || top | middle | bottom
 var textSize = 2;//DEAR GOD I TRIED 10, ITS WAY TO BIG. 2 seemes to be the default. 1 is barely visible is there no middle ground!!!?!???!?!?!
 var rootDirContents = [storage.readdir({ fs: "sd", path: "/" })];
+var depthWidth = 3;
 
 
 
@@ -39,6 +40,9 @@ var cordinates = [//holds the cordinate positions for the line points
     [190, 40],
     [210, 50]//final line end point [2 extra for the end lines]
 ];
+
+//17 lines needed total, 18 points
+
 function calculateLineSegments() {//finds the individual spacing betwee each notch
     var spaceToUtilize = screenWidth - (leftBorder + rightBorder)
     var pixelsPerDivision = spaceToUtilize / cordinates.length
@@ -48,8 +52,8 @@ function calculateLineSegments() {//finds the individual spacing betwee each not
 }
 
 function resetDepths() {
-    for (var i = 0; i < cordinates.length; i++) {
-        cordinates[i][1] = topBorder//base depth is 30
+    for (var i = 0; i < notches.length; i++) {
+        cordinates[i + 2][1] = topBorder//starting depth from top of screen
     }
     for (var i = 0; i < notches.length; i++) {
         notches[i] = 0
@@ -66,14 +70,27 @@ function drawDepthValues() {
 function drawLines() {
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
     for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
-        var x1 = cordinates[i][0];
+        var x1 = cordinates[i][0] + depthWidth;//add space for little platau
         var y1 = cordinates[i][1];
-        var x2 = cordinates[i + 1][0];
+        var x2 = cordinates[i + 1][0] - depthWidth;//add space for little platau
         var y2 = cordinates[i + 1][1];
         display.drawLine(
             x1, y1, x2, y2, PriColour
         );
     }
+    for (var i = 0; i < cordinates.length - 1; i++) {//add little line in between sloaped lines "\_/""
+        var x1 = cordinates[i][0] - depthWidth;//add space for little platau
+        var y1 = cordinates[i][1];
+        var x2 = cordinates[i][0] + depthWidth;
+        var y2 = cordinates[i][1];
+        display.drawLine(
+            x1, y1, x2, y2, PriColour
+        );
+    }
+}
+
+function calculatePointyPoints() {
+
 }
 
 function refreshScreen() {
@@ -231,16 +248,6 @@ function loadKey() {
 }
 
 
-
-
-
-
-
-// function loadKey() {
-//     var chosenFile = dialog.pickFile({ fs: "sd", path: "/BruceKeys/" });
-//     dialog.message(chosenFile);
-//     delay(500);
-// }
 
 //screen size (320x170) 
 
