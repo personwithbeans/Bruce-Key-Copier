@@ -47,7 +47,7 @@ var cordinates = [//holds the cordinate positions for the line points
 function calculateLineSegments() {//finds the individual spacing betwee each notch
     var spaceToUtilize = screenWidth - (leftBorder + rightBorder)
     var pixelsPerDivision = spaceToUtilize / cordinates.length
-        maxNotchDepth = pixelsPerDivision
+    maxNotchDepth = pixelsPerDivision
     for (var i = 0; i < notches.length + 2; i++) {
         cordinates[i + 2][0] = (pixelsPerDivision * (i + 1)) + leftBorder
     }
@@ -69,38 +69,6 @@ function drawDepthValues() {
     }
 }
 
-function calculateXValue(d1, d2, p1, p2) {//p1 and p2 are in world space
-    var xValue = (-(d1 - d2 - p1 - p2) / 2);
-    return xValue;
-}
-
-// function drawLines() {//dear god why did i commit myself to this project
-//     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
-//     for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render main diagonal lines
-//         var x1 = cordinates[i][0] + depthWidth;//add space for little platau
-//         var y1 = cordinates[i + 1][1];//20 just as a hardcoded base value for now, have calculate later
-//         var x2 = cordinates[i + 1][0] - depthWidth;//add space for little platau
-//         var y2 = cordinates[i + 1][1];
-//         display.drawLine(
-//             x1, y1, x2, y2, PriColour
-//         );
-//         var sP = calculateXValue(cordinates[i + 1][1],cordinates[i + 1][1],cordinates[i][0] + depthWidth,cordinates[i + 1][0] - depthWidth)
-//         var sH = sP + cordinates[i][0] + depthWidth
-//         display.drawCircle(
-//             sP,sH,3,PriColour
-//         );
-//     }
-//     for (var i = 0; i < cordinates.length - 1; i++) {//add little line in between sloaped lines "\_/" instead of "\/"
-//         var x1 = cordinates[i][0] - depthWidth;//add space for little platau
-//         var y1 = cordinates[i][1];
-//         var x2 = cordinates[i][0] + depthWidth;
-//         var y2 = cordinates[i][1];
-//         display.drawLine(
-//             x1, y1, x2, y2, PriColour
-//         );
-//     }
-// }
-
 function drawLines() {
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
     for (var i = 0; i < cordinates.length - 1; i++) {//go though each point and render
@@ -108,14 +76,23 @@ function drawLines() {
         var y1 = cordinates[i][1];
         var x2 = cordinates[i + 1][0] - depthWidth;//add space for little platau
         var y2 = cordinates[i + 1][1];
+
         display.drawLine(
             x1, y1, x2, y2, PriColour
-            
-        );
-        display.drawCircle(
-            ((x1+x2)/2),((y1+y2)/2) - ((x2-x1)/2),3,PriColour
         );
     }
+
+    for (var i = 0; i < notches.length + 1; i++) {
+        var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+        var y1 = cordinates[i + 1][1];
+        var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+        var y2 = cordinates[i + 2][1];
+
+        display.drawCircle(//temp, just to draw the points      x | y | rad | colour
+            (-(x1 - x2) / 2) + x1, ((y1 + y2) / 2) - ((x2 - x1) / 2), 3, PriColour
+        );
+    }
+
     for (var i = 0; i < cordinates.length - 1; i++) {//add little line in between sloaped lines "\_/""
         var x1 = cordinates[i][0] - depthWidth;//add space for little platau
         var y1 = cordinates[i][1];
@@ -244,7 +221,6 @@ function dirCheck() {//checks in the BruceKeys folder exists in the sd directory
     return keysFolderExists;
 }
 
-
 function saveKey() {//main function to save file
     if (dirCheck() == true) {//checks in the BruceKeys folder exists in the sd directory [in future maybe if no sd then divert to small file system, check at start]
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
@@ -280,7 +256,6 @@ function loadKey() {
     refreshScreen();
     return;
 }
-
 
 
 //screen size (320x170) 
