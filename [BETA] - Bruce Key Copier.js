@@ -227,7 +227,8 @@ function fileCheck() {// Return the first available number
 function fileDataWrite(filenameEndValue) {//writes the data for a file, don't know if it can create a file though
 
     if (storage.write({ fs: "sd", path: "/BruceKeys/KeyCopy_" + filenameEndValue + ".txt" }, collectKeyData(), "write")) {
-        dialog.success("Key saved successfully.");
+         dialog.success("File saved succesfully in /Brucekeys.");
+         delay(1000)
     }
 }
 
@@ -249,7 +250,7 @@ function saveKey() {//main function to save file
         storage.mkdir({ fs: "sd", path: "/BruceKeys" });//creates folder if no detected on sd card
         if (dirCheck() == true) { //checks if successfully created
             dialog.success("BruceKeys folder created successfully.");
-            delay(200);
+            delay(1000);
         }
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     }
@@ -260,7 +261,7 @@ function loadKey() {//selve explanitory function name
     var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
     if (!chosenFile) {//if operaiton is canceled display error message
         dialog.error("No file selected.");
-        elay(1000)
+        delay(1000)
     }
     // Read the file contents
     var fileString = storage.read({ fs: "sd", path: chosenFile });
