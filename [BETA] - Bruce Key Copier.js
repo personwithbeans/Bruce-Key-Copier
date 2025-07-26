@@ -79,9 +79,11 @@ function drawDepthValues() {//display the depth values above
         var x = cordinates[i + 2][0]
         var y1 = ((topBorder / 2) + verticalLineBuffer + 10); //top y value (+ 10 is a little extra to clear the numbers above)
         var y2 = (cordinates[i + 2][1] - verticalLineBuffer); //bottom y value
-        display.drawLine(
-            x, y1, x, y2, PriColour
-        );
+        if (y2 - y1 > 0) {
+            display.drawLine(
+                x, y1, x, y2, PriColour
+            );
+        }
     }
 }
 
@@ -216,10 +218,21 @@ function collectKeyData() {//putts all the data into a large array
 function fileCheck() {// Return the first available number
     var DirContents = storage.readdir({ fs: "sd", path: "/BruceKeys" });
     for (var i = 0; i < 100; i++) {
-        var filename = "KeyCopy_" + i + ".txt";
-        if (DirContents.indexOf(filename) === -1) {
-            return i;
+        if (String(i).length == 1) {
+            var filename = "KeyCopy_" + "0" + i + ".txt";
+            if (DirContents.indexOf(filename) === -1) {
+                i = ("0" + String(i))
+                return i;
+            }
+        } else {
+            var filename = "KeyCopy_" + i + ".txt";
+            if (DirContents.indexOf(filename) === -1) {
+                return i;
+            }
         }
+        // for (var i = 10; i < 100; i++) {
+
+        //     }
     }
     return null; // All slots taken, currently hardcapped to max of 100 to prevents some sort of infinite loop, if you need over 100 saved keys you have an issue
 }
@@ -227,8 +240,8 @@ function fileCheck() {// Return the first available number
 function fileDataWrite(filenameEndValue) {//writes the data for a file, don't know if it can create a file though
 
     if (storage.write({ fs: "sd", path: "/BruceKeys/KeyCopy_" + filenameEndValue + ".txt" }, collectKeyData(), "write")) {
-         dialog.success("File saved succesfully in /Brucekeys.");
-         delay(1000)
+        dialog.success("File saved succesfully in /Brucekeys.");
+        delay(500)
     }
 }
 
@@ -240,7 +253,10 @@ function dirCheck() {//checks in the BruceKeys folder exists in the sd directory
             var keysFolderExists = false;
         }
     }
+    dialog.success(keysFolderExists);
+    delay(500)
     return keysFolderExists;
+
 }
 
 function saveKey() {//main function to save file
@@ -248,9 +264,9 @@ function saveKey() {//main function to save file
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     } else {
         storage.mkdir({ fs: "sd", path: "/BruceKeys" });//creates folder if no detected on sd card
-        if (dirCheck() == true) { //checks if successfully created
+        if (dirCheck() == true) { //Double checks if successfully created
             dialog.success("BruceKeys folder created successfully.");
-            delay(1000);
+            delay(500);
         }
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     }
@@ -261,7 +277,7 @@ function loadKey() {//selve explanitory function name
     var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
     if (!chosenFile) {//if operaiton is canceled display error message
         dialog.error("No file selected.");
-        delay(1000)
+        delay(500)
     }
     // Read the file contents
     var fileString = storage.read({ fs: "sd", path: chosenFile });
@@ -275,7 +291,7 @@ function loadKey() {//selve explanitory function name
     for (i = 0; i < fileData.length - 1; i++) {//update line endpoint cordinates
         cordinates[i + 2][1] = ((depthPerSegment * Number(fileData[i + 1])) + topBorder)
         dialog.success("Key loaded");
-        delay(1000)
+        delay(500)
     }
 
     refreshScreen();
@@ -300,10 +316,11 @@ drawDepthValues()
 while (true) {
     if (getEscPress()) {
         choice = mainMenu()
-        textSetup()
+        textSetup()//why is this here??
         if (choice === "exit") {
             break;
         }
+        refreshScreen()
     }
     if (getSelPress()) {
         display.fill(BGColour);
