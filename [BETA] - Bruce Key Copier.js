@@ -30,10 +30,9 @@ var notches = [0, 0, 0, 0, 0]; // Array to hold key depths
 var currentNotch = 1; // Current notch selected of the key | starting at 1 = firstposition from left, Key pointing right
 var amountOfNotches = 5; // Number of notches
 var maxNotchDepth = 70; // Maximum depth of the notches | also can be the distance between the segments
-var maxNotchDepthPositions = 10; // Maximum depth of the notches |
-var amountOfDepths = 10; // 10 for kwikset
+var amountOfDepths = 7; // 10 for kwikset
 var currentNotchDepth = 0; // Current height of the key
-var depthPerSegment = (maxNotchDepth / maxNotchDepthPositions)
+var depthPerSegment = (maxNotchDepth / amountOfDepths)
 var depthWidth = 2;//total width gets double this value
 var verticalLineBuffer = 10;
 
@@ -312,7 +311,7 @@ while (true) {
         drawLines()
         drawDepthValues()
     }
-    if (getNextPress() && currentNotchDepth < maxNotchDepthPositions) {
+    if (getNextPress() && currentNotchDepth < amountOfDepths) {
         currentNotchDepth += 1;
         updatecurrentNotchHeight()
         drawLines()
