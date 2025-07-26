@@ -49,6 +49,58 @@ var cordinates = [//holds the cordinate positions for the line points
     //final line end point [2 extra for the end lines]
 ];
 
+//key profiles [WIP - Additional variables will be needed in these][ill do my best with these but no guarantees]
+var Kwikset_KW1 = {
+    amountOfNotches: 5,
+    amountOfDepths: 7,
+    maxNotchDepth: 70,
+    leftBorder: 20,
+    rightBorder: 40,
+    topBorder: 50,
+    depthWidth: 2,
+    verticalLineBuffer: 10//not sure how usefull this is 
+};
+var Schlage_SC4 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var Arrow_AR4 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var Master_Lock_M1 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var American_AM7 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+
 //most of of the following is probably stupid and hosnesty the fact that it works in magic
 
 function calculateLineSegments() {//calculate individual spacing between each notch and sets
