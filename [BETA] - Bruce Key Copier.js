@@ -49,6 +49,15 @@ var cordinates = [//holds the cordinate positions for the line points
     //final line end point [2 extra for the end lines]
 ];
 
+var tipCordinates = [//array should be +1 longer than the # of notches
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0]
+];
+
 //key profiles [WIP - Additional variables will be needed in these][ill do my best with these but no guarantees]
 var Kwikset_KW1 = {
     amountOfNotches: 5,
@@ -60,7 +69,7 @@ var Kwikset_KW1 = {
     depthWidth: 2,
     verticalLineBuffer: 10//not sure how usefull this is 
 };
-var Schlage_SC4 = {
+var Schlage_SC1 = { //SC1 is the ony version i have
     amountOfNotches: null,
     amountOfDepths: null,
     maxNotchDepth: null,
@@ -152,17 +161,6 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
         );
     }
 
-    for (var i = 0; i < notches.length + 1; i++) {//i wish i could say that desmos was helpfull or understanding this part
-        var x01 = cordinates[i + 1][0] + depthWidth;
-        var y01 = cordinates[i + 1][1];
-        var x02 = cordinates[i + 2][0] - depthWidth;
-        var y02 = cordinates[i + 2][1];
-
-        display.drawCircle(//temp, just to draw the points      x | y | rad | colour
-            (-(x01 - x02) / 2) + x01, ((y01 + y02) / 2) - ((x02 - x01) / 2), 3, PriColour
-        );
-    }
-
     for (var i = 0; i < notches.length; i++) {//add little line in between sloaped lines "\_/""
         var x1 = cordinates[i + 2][0] - depthWidth;
         var y1 = cordinates[i + 2][1];
@@ -179,12 +177,31 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     display.drawLine(cordinates[1][0] + depthWidth, topBorder, 0, topBorder, PriColour)
 }
 
-function refreshScreen() {//refreshes screen/updates any information
-    textSetup()
-    display.fill(BGColour);
-    drawHighighter();
-    drawLines();
-    drawDepthValues()
+function DrawTips() {
+    for (var i = 0; i < amountOfNotches + 1; i++) {//i wish i could say that desmos was helpfull or understanding this part
+        var x01 = cordinates[i + 1][0] + depthWidth;
+        var y01 = cordinates[i + 1][1];
+        var x02 = cordinates[i + 2][0] - depthWidth;
+        var y02 = cordinates[i + 2][1];
+
+        tipCordinates[i][0] = ((-(x01 - x02) / 2) + x01 + ((((y01) - (y02)) / 2)))//works, dont ask how [if you are interested just look at this: desmos.com/calculator/apyp2om3ic]
+
+        var tipYVal = ((y01 + y02) / 2) - ((x02 - x01) / 2);
+
+        if (tipYVal > topBorder) {
+            tipCordinates[i][1] = tipYVal
+        } else {
+            tipCordinates[i][1] = topBorder
+        }
+
+        // display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0], cordinates[i + 2][1], PriColour)
+        display.drawCircle(tipCordinates[i][0], tipCordinates[i][1], 2, PriColour)
+
+    }
+
+    // for (var i = 0; i < notches.length + 1; i++) {//draw right lines
+
+    // }
 }
 
 function mainMenu() {
@@ -350,6 +367,14 @@ function loadKey() {//selve explanitory function name
     return;
 }
 
+function refreshScreen() {//refreshes screen/updates any information
+    textSetup();
+    display.fill(BGColour);
+    drawHighighter();
+    drawLines();
+    drawDepthValues();
+    DrawTips();
+}
 
 //screen size (320x170) 
 // 1.9 inch ST7789V IPS color TFT LCD
@@ -362,7 +387,7 @@ calculateLineSegments()
 drawLines()
 drawHighighter()
 drawDepthValues()
-
+DrawTips()
 
 //main loop
 while (true) {
@@ -377,22 +402,19 @@ while (true) {
     if (getSelPress()) {
         display.fill(BGColour);
         changeSelectedNotch()
-        drawHighighter()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
+
     }
     if (getNextPress() && currentNotchDepth < amountOfDepths) {
         currentNotchDepth += 1;
         updatecurrentNotchHeight()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
         delay(20);
     }
     if (getPrevPress() && currentNotchDepth > 0) {
         currentNotchDepth -= 1;
         updatecurrentNotchHeight()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
         delay(20);
     }
 }
