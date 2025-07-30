@@ -184,12 +184,13 @@ function DrawTips() {
         var y01 = cordinates[i + 1][1];
         var x02 = cordinates[i + 2][0] - depthWidth;
         var y02 = cordinates[i + 2][1];
+      
 
         tipCordinates[i][0] = ((-(x01 - x02) / 2) + x01 + ((((y01) - (y02)) / 2)))//works, dont ask how [if you are interested just look at this: desmos.com/calculator/apyp2om3ic]
 
         var tipYVal = ((y01 + y02) / 2) - ((x02 - x01) / 2);
 
-        if (tipYVal > topBorder) {
+        if (tipYVal >= topBorder) {
             tipCordinates[i][1] = tipYVal
         } else {
             tipCordinates[i][1] = topBorder
@@ -199,8 +200,8 @@ function DrawTips() {
         display.drawCircle(tipCordinates[i][0], tipCordinates[i][1], 2, PriColour)
     }
     for (var i = 0; i < amountOfNotches; i++) {
-        display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0] - depthWidth, cordinates[i + 2][1], (255, 255, 255))//draw left lines
-        display.drawLine(tipCordinates[i + 1][0], tipCordinates[i + 1][1], cordinates[i + 2][0] + depthWidth, cordinates[i + 2][1], (255, 255, 255))//draw right lines
+        display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0] - depthWidth, cordinates[i + 2][1], PriColour)//draw left lines
+        display.drawLine(tipCordinates[i + 1][0], tipCordinates[i + 1][1], cordinates[i + 2][0] + depthWidth, cordinates[i + 2][1], PriColour)//draw right lines
     }
 }
 

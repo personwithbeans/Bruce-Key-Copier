@@ -49,6 +49,67 @@ var cordinates = [//holds the cordinate positions for the line points
     //final line end point [2 extra for the end lines]
 ];
 
+var tipCordinates = [//array should be +1 longer than the # of notches
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0]
+];
+
+//key profiles [WIP - Additional variables will be needed in these][ill do my best with these but no guarantees]
+var Kwikset_KW1 = {
+    amountOfNotches: 5,
+    amountOfDepths: 7,
+    maxNotchDepth: 70,
+    leftBorder: 20,
+    rightBorder: 40,
+    topBorder: 50,
+    depthWidth: 2,
+    verticalLineBuffer: 10//not sure how usefull this is 
+};
+var Schlage_SC1 = { //SC1 is the ony version i have
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var Arrow_AR4 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var Master_Lock_M1 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+var American_AM7 = {
+    amountOfNotches: null,
+    amountOfDepths: null,
+    maxNotchDepth: null,
+    leftBorder: null,
+    rightBorder: null,
+    topBorder: null,
+    depthWidth: null,
+    verticalLineBuffer: null//not sure how usefull this is 
+};
+
 //most of of the following is probably stupid and hosnesty the fact that it works in magic
 
 function calculateLineSegments() {//calculate individual spacing between each notch and sets
@@ -58,6 +119,7 @@ function calculateLineSegments() {//calculate individual spacing between each no
     for (var i = 0; i < notches.length; i++) {
         cordinates[i + 2][0] = (pixelsPerDivision * (i + 1)) + leftBorder
     }
+    cordinates[8][0] = (pixelsPerDivision * 7) + leftBorder
 }
 
 function resetDepths() {//whoa who could have guessed it resets the height. NOT LIKE ITS IN THE FREEKIN NAME.
@@ -79,35 +141,26 @@ function drawDepthValues() {//display the depth values above
         var x = cordinates[i + 2][0]
         var y1 = ((topBorder / 2) + verticalLineBuffer + 10); //top y value (+ 10 is a little extra to clear the numbers above)
         var y2 = (cordinates[i + 2][1] - verticalLineBuffer); //bottom y value
-        display.drawLine(
-            x, y1, x, y2, PriColour
-        );
+        if (y2 - y1 > 0) {
+            display.drawLine(
+                x, y1, x, y2, PriColour
+            );
+        }
     }
 }
 
 function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 3; i++) {//go though each point and render
-        var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
-        var y1 = cordinates[i + 1][1];
-        var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
-        var y2 = cordinates[i + 2][1];
+    // for (var i = 0; i < cordinates.length - 3; i++) {//go though each point and render
+    //     var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+    //     var y1 = cordinates[i + 1][1];
+    //     var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+    //     var y2 = cordinates[i + 2][1];
 
-        display.drawLine(
-            x1, y1, x2, y2, PriColour
-        );
-    }
-
-    for (var i = 0; i < notches.length + 1; i++) {//i wish i could say that desmos was helpfull or understanding this part
-        var x01 = cordinates[i + 1][0] + depthWidth;
-        var y01 = cordinates[i + 1][1];
-        var x02 = cordinates[i + 2][0] - depthWidth;
-        var y02 = cordinates[i + 2][1];
-
-        display.drawCircle(//temp, just to draw the points      x | y | rad | colour
-            (-(x01 - x02) / 2) + x01, ((y01 + y02) / 2) - ((x02 - x01) / 2), 3, PriColour
-        );
-    }
+    //     display.drawLine(
+    //         x1, y1, x2, y2, PriColour
+    //     );
+    // }
 
     for (var i = 0; i < notches.length; i++) {//add little line in between sloaped lines "\_/""
         var x1 = cordinates[i + 2][0] - depthWidth;
@@ -119,18 +172,37 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
         );
     }
     //additional lines [kwikset_kw1]
-    display.drawLine(cordinates[7][0], cordinates[7][1], cordinates[7][0], cordinates[7][1] + 10, PriColour)// + 10 need to be writable variable for multiple keys
-    display.drawLine(cordinates[7][0], cordinates[7][1] + 10, cordinates[7][0] - 15, cordinates[7][1] + 30, PriColour)//need to change to varaible controlled for multiple keys
-    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 30, 0, cordinates[7][1] + 30, PriColour)
-    display.drawLine(cordinates[1][0] + depthWidth, topBorder, 0, topBorder, PriColour)
+    display.drawLine(cordinates[7][0], cordinates[7][1] - 4, cordinates[7][0], cordinates[7][1] + 6, PriColour)// + 10 need to be writable variable for multiple keys
+    display.drawLine(cordinates[7][0], cordinates[7][1] + 6, cordinates[7][0] - 15, cordinates[7][1] + 26, PriColour)//need to change to varaible controlled for multiple keys
+    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 26, 0, cordinates[7][1] + 26, PriColour)
+    display.drawLine(0, topBorder, tipCordinates[0][0], topBorder, PriColour)
 }
 
-function refreshScreen() {//refreshes screen/updates any information
-    textSetup()
-    display.fill(BGColour);
-    drawHighighter();
-    drawLines();
-    drawDepthValues()
+function DrawTips() {
+    for (var i = 0; i < amountOfNotches + 1; i++) {//i wish i could say that desmos was helpfull or understanding this part
+        var x01 = cordinates[i + 1][0] + depthWidth;
+        var y01 = cordinates[i + 1][1];
+        var x02 = cordinates[i + 2][0] - depthWidth;
+        var y02 = cordinates[i + 2][1];
+      
+
+        tipCordinates[i][0] = ((-(x01 - x02) / 2) + x01 + ((((y01) - (y02)) / 2)))//works, dont ask how [if you are interested just look at this: desmos.com/calculator/apyp2om3ic]
+
+        var tipYVal = ((y01 + y02) / 2) - ((x02 - x01) / 2);
+
+        if (tipYVal >= topBorder) {
+            tipCordinates[i][1] = tipYVal
+        } else {
+            tipCordinates[i][1] = topBorder
+        }
+
+
+        display.drawCircle(tipCordinates[i][0], tipCordinates[i][1], 2, PriColour)
+    }
+    for (var i = 0; i < amountOfNotches; i++) {
+        display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0] - depthWidth, cordinates[i + 2][1], PriColour)//draw left lines
+        display.drawLine(tipCordinates[i + 1][0], tipCordinates[i + 1][1], cordinates[i + 2][0] + depthWidth, cordinates[i + 2][1], PriColour)//draw right lines
+    }
 }
 
 function mainMenu() {
@@ -216,10 +288,21 @@ function collectKeyData() {//putts all the data into a large array
 function fileCheck() {// Return the first available number
     var DirContents = storage.readdir({ fs: "sd", path: "/BruceKeys" });
     for (var i = 0; i < 100; i++) {
-        var filename = "KeyCopy_" + i + ".txt";
-        if (DirContents.indexOf(filename) === -1) {
-            return i;
+        if (String(i).length == 1) {
+            var filename = "KeyCopy_" + "0" + i + ".txt";
+            if (DirContents.indexOf(filename) === -1) {
+                i = ("0" + String(i))
+                return i;
+            }
+        } else {
+            var filename = "KeyCopy_" + i + ".txt";
+            if (DirContents.indexOf(filename) === -1) {
+                return i;
+            }
         }
+        // for (var i = 10; i < 100; i++) {
+
+        //     }
     }
     return null; // All slots taken, currently hardcapped to max of 100 to prevents some sort of infinite loop, if you need over 100 saved keys you have an issue
 }
@@ -227,7 +310,8 @@ function fileCheck() {// Return the first available number
 function fileDataWrite(filenameEndValue) {//writes the data for a file, don't know if it can create a file though
 
     if (storage.write({ fs: "sd", path: "/BruceKeys/KeyCopy_" + filenameEndValue + ".txt" }, collectKeyData(), "write")) {
-        dialog.success("Key saved successfully.");
+        dialog.success("File saved succesfully in /Brucekeys.");
+        delay(500)
     }
 }
 
@@ -239,7 +323,10 @@ function dirCheck() {//checks in the BruceKeys folder exists in the sd directory
             var keysFolderExists = false;
         }
     }
+    dialog.success(keysFolderExists);
+    delay(500)
     return keysFolderExists;
+
 }
 
 function saveKey() {//main function to save file
@@ -247,9 +334,9 @@ function saveKey() {//main function to save file
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     } else {
         storage.mkdir({ fs: "sd", path: "/BruceKeys" });//creates folder if no detected on sd card
-        if (dirCheck() == true) { //checks if successfully created
+        if (dirCheck() == true) { //Double checks if successfully created
             dialog.success("BruceKeys folder created successfully.");
-            delay(200);
+            delay(500);
         }
         fileDataWrite(fileCheck())//checks what end number it needs to use for the file name to not overwrite another file
     }
@@ -260,7 +347,7 @@ function loadKey() {//selve explanitory function name
     var chosenFile = dialog.pickFile("/BruceKeys", "txt");//haveu ser select file
     if (!chosenFile) {//if operaiton is canceled display error message
         dialog.error("No file selected.");
-        elay(1000)
+        delay(500)
     }
     // Read the file contents
     var fileString = storage.read({ fs: "sd", path: chosenFile });
@@ -274,55 +361,63 @@ function loadKey() {//selve explanitory function name
     for (i = 0; i < fileData.length - 1; i++) {//update line endpoint cordinates
         cordinates[i + 2][1] = ((depthPerSegment * Number(fileData[i + 1])) + topBorder)
         dialog.success("Key loaded");
-        delay(1000)
+        delay(500)
     }
 
     refreshScreen();
     return;
 }
 
+function refreshScreen() {//refreshes screen/updates any information
+    textSetup();
+    display.fill(BGColour);
+    drawHighighter();
+    drawLines();
+    drawDepthValues();
+    DrawTips();
+}
 
 //screen size (320x170) 
 // 1.9 inch ST7789V IPS color TFT LCD
 
 //innitial setup
+calculateLineSegments()
 textSetup()
 display.fill(BGColour);
 resetDepths()
-calculateLineSegments()
 drawLines()
 drawHighighter()
 drawDepthValues()
+DrawTips()
 
+refreshScreen()//fixes loading issues with the DrawTips() Function
 
 //main loop
 while (true) {
     if (getEscPress()) {
         choice = mainMenu()
-        textSetup()
+        textSetup()//why is this here??
         if (choice === "exit") {
             break;
         }
+        refreshScreen()
     }
     if (getSelPress()) {
         display.fill(BGColour);
         changeSelectedNotch()
-        drawHighighter()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
+
     }
     if (getNextPress() && currentNotchDepth < amountOfDepths) {
         currentNotchDepth += 1;
         updatecurrentNotchHeight()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
         delay(20);
     }
     if (getPrevPress() && currentNotchDepth > 0) {
         currentNotchDepth -= 1;
         updatecurrentNotchHeight()
-        drawLines()
-        drawDepthValues()
+        refreshScreen()
         delay(20);
     }
 }
