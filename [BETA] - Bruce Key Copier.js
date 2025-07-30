@@ -119,6 +119,7 @@ function calculateLineSegments() {//calculate individual spacing between each no
     for (var i = 0; i < notches.length; i++) {
         cordinates[i + 2][0] = (pixelsPerDivision * (i + 1)) + leftBorder
     }
+    cordinates[8][0] = (pixelsPerDivision * 7) + leftBorder
 }
 
 function resetDepths() {//whoa who could have guessed it resets the height. NOT LIKE ITS IN THE FREEKIN NAME.
@@ -150,16 +151,16 @@ function drawDepthValues() {//display the depth values above
 
 function drawLines() {//WHOOOAAA, you can draw lines????? crazy
     drawString(keychoice, screenWidth - 80, 5);//display type of key selected
-    for (var i = 0; i < cordinates.length - 3; i++) {//go though each point and render
-        var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
-        var y1 = cordinates[i + 1][1];
-        var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
-        var y2 = cordinates[i + 2][1];
+    // for (var i = 0; i < cordinates.length - 3; i++) {//go though each point and render
+    //     var x1 = cordinates[i + 1][0] + depthWidth;//add space for little platau
+    //     var y1 = cordinates[i + 1][1];
+    //     var x2 = cordinates[i + 2][0] - depthWidth;//add space for little platau
+    //     var y2 = cordinates[i + 2][1];
 
-        display.drawLine(
-            x1, y1, x2, y2, PriColour
-        );
-    }
+    //     display.drawLine(
+    //         x1, y1, x2, y2, PriColour
+    //     );
+    // }
 
     for (var i = 0; i < notches.length; i++) {//add little line in between sloaped lines "\_/""
         var x1 = cordinates[i + 2][0] - depthWidth;
@@ -171,10 +172,10 @@ function drawLines() {//WHOOOAAA, you can draw lines????? crazy
         );
     }
     //additional lines [kwikset_kw1]
-    display.drawLine(cordinates[7][0], cordinates[7][1], cordinates[7][0], cordinates[7][1] + 10, PriColour)// + 10 need to be writable variable for multiple keys
-    display.drawLine(cordinates[7][0], cordinates[7][1] + 10, cordinates[7][0] - 15, cordinates[7][1] + 30, PriColour)//need to change to varaible controlled for multiple keys
-    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 30, 0, cordinates[7][1] + 30, PriColour)
-    display.drawLine(cordinates[1][0] + depthWidth, topBorder, 0, topBorder, PriColour)
+    display.drawLine(cordinates[7][0], cordinates[7][1] - 4, cordinates[7][0], cordinates[7][1] + 6, PriColour)// + 10 need to be writable variable for multiple keys
+    display.drawLine(cordinates[7][0], cordinates[7][1] + 6, cordinates[7][0] - 15, cordinates[7][1] + 26, PriColour)//need to change to varaible controlled for multiple keys
+    display.drawLine(cordinates[7][0] - 15, cordinates[7][1] + 26, 0, cordinates[7][1] + 26, PriColour)
+    display.drawLine(0, topBorder, tipCordinates[0][0], topBorder, PriColour)
 }
 
 function DrawTips() {
@@ -194,14 +195,13 @@ function DrawTips() {
             tipCordinates[i][1] = topBorder
         }
 
-        // display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0], cordinates[i + 2][1], PriColour)
+
         display.drawCircle(tipCordinates[i][0], tipCordinates[i][1], 2, PriColour)
-
     }
-
-    // for (var i = 0; i < notches.length + 1; i++) {//draw right lines
-
-    // }
+    for (var i = 0; i < amountOfNotches; i++) {
+        display.drawLine(tipCordinates[i][0], tipCordinates[i][1], cordinates[i + 2][0] - depthWidth, cordinates[i + 2][1], (255, 255, 255))//draw left lines
+        display.drawLine(tipCordinates[i + 1][0], tipCordinates[i + 1][1], cordinates[i + 2][0] + depthWidth, cordinates[i + 2][1], (255, 255, 255))//draw right lines
+    }
 }
 
 function mainMenu() {
@@ -380,14 +380,16 @@ function refreshScreen() {//refreshes screen/updates any information
 // 1.9 inch ST7789V IPS color TFT LCD
 
 //innitial setup
+calculateLineSegments()
 textSetup()
 display.fill(BGColour);
 resetDepths()
-calculateLineSegments()
 drawLines()
 drawHighighter()
 drawDepthValues()
 DrawTips()
+
+refreshScreen()//fixes loading issues with the DrawTips() Function
 
 //main loop
 while (true) {
