@@ -40,7 +40,7 @@ Thank's to icy.1 on discord for providing an example just demonstrating renderin
 
 ## Requirements
 
-- Version of Bruce with JS interpreter ([github.com/pr3y/Bruce](url))
+- Version of Bruce with JS interpreter ([https://github.com/BruceDevices/firmware](url))
 - 1.9" ST7789V IPS color TFT LCD (or compatible display) -- ( Lillygo T-Embed CC1101 | [lilygo.cc/products/t-embed-cc1101](url))
 
 ## Disclaimer
